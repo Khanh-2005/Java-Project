@@ -1,1 +1,4 @@
+com\DAO\TodoDAO.class
 com\khanh\HelloServlet.class
+com\DB\DBConnector.class
+com\entity\Entity.class

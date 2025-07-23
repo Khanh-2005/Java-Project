@@ -16,7 +16,7 @@
   <!-- Ánh xạ URL đến servlet -->
   <servlet-mapping>
     <servlet-name>HelloServlet</servlet-name>
-    <url-pattern>/HelloServlet</url-pattern>
+    <url-pattern>/add_todo</url-pattern>
   </servlet-mapping>
 
 
