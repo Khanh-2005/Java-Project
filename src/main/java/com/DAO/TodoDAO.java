@@ -91,21 +91,36 @@ public class TodoDAO {
     public boolean updateTodo(Entity en) {
         boolean f = false;
         try {
-            String sql = "update todo set name=?, todo=?, status=? where id=?";
+            String sql = "UPDATE todo SET name=?, todo=?, status=? WHERE id=?";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, en.getName());
             ps.setString(2, en.getTodo());
             ps.setString(3, en.getStatus());
             ps.setInt(4, en.getId());
-
             int i = ps.executeUpdate();
-            if (i == 1) {
+            if (i > 0) {
                 f = true;
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        return f;
+    }
+
+    public boolean deleteTodo(int id) {
+        boolean f = false;
+        try {
+            String sql = "delete from todo where id=?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+
+            int i = ps.executeUpdate();
+            if (i > 0) {
+                f = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return f;
     }
 }

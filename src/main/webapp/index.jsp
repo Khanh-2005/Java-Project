@@ -64,7 +64,7 @@
                                                                     <td>
                                                                         <a href=" edit.jsp?id=<%= en.getId() %>"
                                                                             class="btn btn-sm btn-success">Edit</a>
-                                                                        <a href=""
+                                                                        <a href="delete?id=<%= en.getId() %>"
                                                                             class="btn btn-sm btn-danger">Delete</a>
                                                                     </td>
                                                                 </tr>

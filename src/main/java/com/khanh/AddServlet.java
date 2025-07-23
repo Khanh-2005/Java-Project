@@ -35,7 +35,7 @@ public class AddServlet extends HttpServlet {
             response.sendRedirect("index.jsp");
         } else {
             session.setAttribute("failedMsg", "Failed to add todo");
-            response.sendRedirect("add_todo.jsp");
+            response.sendRedirect("index.jsp");
         }
     }
 

@@ -6,27 +6,27 @@
   <!-- Tên ứng dụng -->
   <display-name>todoapp</display-name>
 
-  <!-- Khai báo servlet -->
+  <!-- Khai báo AddServlet -->
   <servlet>
     <servlet-name>AddServlet</servlet-name>
     <servlet-class>com.khanh.AddServlet</servlet-class>
   </servlet>
 
 
-  <!-- Ánh xạ URL đến servlet -->
+  <!-- Ánh xạ URL đến AddServlet -->
   <servlet-mapping>
     <servlet-name>AddServlet</servlet-name>
     <url-pattern>/add_todo</url-pattern>
   </servlet-mapping>
 
-  <!-- Khai báo servlet -->
+  <!-- Khai báo UpdateServlet -->
   <servlet>
     <servlet-name>UpdateServlet</servlet-name>
     <servlet-class>com.khanh.UpdateServlet</servlet-class>
   </servlet>
 
 
-  <!-- Ánh xạ URL đến servlet -->
+  <!-- Ánh xạ URL đến UpdateServlet -->
   <servlet-mapping>
     <servlet-name>UpdateServlet</servlet-name>
     <url-pattern>/update</url-pattern>
