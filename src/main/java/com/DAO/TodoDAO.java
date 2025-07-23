@@ -65,4 +65,47 @@ public class TodoDAO {
         return list;
     }
 
+    public Entity getTodoById(int id) {
+        Entity en = null;
+        try {
+
+            String sql = "select * from todo where id=?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                en = new Entity();
+                en.setId(rs.getInt(1));
+                en.setName(rs.getString(2));
+                en.setTodo(rs.getString(3));
+                en.setStatus(rs.getString(4));
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return en;
+    }
+
+    public boolean updateTodo(Entity en) {
+        boolean f = false;
+        try {
+            String sql = "update todo set name=?, todo=?, status=? where id=?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, en.getName());
+            ps.setString(2, en.getTodo());
+            ps.setString(3, en.getStatus());
+            ps.setInt(4, en.getId());
+
+            int i = ps.executeUpdate();
+            if (i == 1) {
+                f = true;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

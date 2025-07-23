@@ -8,15 +8,28 @@
 
   <!-- Khai báo servlet -->
   <servlet>
-    <servlet-name>HelloServlet</servlet-name>
-    <servlet-class>com.khanh.HelloServlet</servlet-class>
+    <servlet-name>AddServlet</servlet-name>
+    <servlet-class>com.khanh.AddServlet</servlet-class>
   </servlet>
 
 
   <!-- Ánh xạ URL đến servlet -->
   <servlet-mapping>
-    <servlet-name>HelloServlet</servlet-name>
+    <servlet-name>AddServlet</servlet-name>
     <url-pattern>/add_todo</url-pattern>
+  </servlet-mapping>
+
+  <!-- Khai báo servlet -->
+  <servlet>
+    <servlet-name>UpdateServlet</servlet-name>
+    <servlet-class>com.khanh.UpdateServlet</servlet-class>
+  </servlet>
+
+
+  <!-- Ánh xạ URL đến servlet -->
+  <servlet-mapping>
+    <servlet-name>UpdateServlet</servlet-name>
+    <url-pattern>/update</url-pattern>
   </servlet-mapping>
 
 

@@ -1,4 +1,5 @@
 com\DAO\TodoDAO.class
-com\khanh\HelloServlet.class
+com\khanh\UpdateServlet.class
+com\khanh\AddServlet.class
 com\DB\DBConnector.class
 com\entity\Entity.class
