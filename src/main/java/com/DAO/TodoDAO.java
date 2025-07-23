@@ -2,6 +2,11 @@ package com.DAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.entity.Entity;
 
 public class TodoDAO {
 
@@ -30,10 +35,34 @@ public class TodoDAO {
 
         } catch (Exception e) {
             e.printStackTrace();
-
-            return f;
         }
         return f;
 
     }
+
+    public List<Entity> getTodo() {
+        List<Entity> list = new ArrayList<Entity>();
+        Entity en = null;
+        try {
+            String sql = "select * from todo";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                en = new Entity();
+                en.setId(rs.getInt(1));
+                en.setName(rs.getString(2));
+                en.setTodo(rs.getString(3));
+                en.setStatus(rs.getString(4));
+
+                list.add(en);
+            }
+            return list;
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        return list;
+    }
+
 }
