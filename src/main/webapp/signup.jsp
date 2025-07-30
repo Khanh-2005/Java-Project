@@ -22,7 +22,7 @@
                                 </div>
                                 <!-- <c:if test="${not empty succMsg}">
                                 <h4 class="text-center text-danger">${succMsg}</h4>
-                                <c: remove var="succMsg" />
+                                <c:remove var="succMsg" />
                                 </c:if> -->
 
                                 <form action="register" method="post">

@@ -64,10 +64,10 @@
 
                                     <div class="form-group col-md-4">
                                         <label>Status</label>
-                                        <section class="form-control" name="status">
-                                            <option class="Active" value="Active">Active</option>
-                                            <option class="Inactive" value="Inactive">Inactive</option>
-                                        </section>
+                                        <select class="form-control" name="status">
+                                            <option value="Active">Active</option>
+                                            <option value="Inactive">Inactive</option>
+                                        </select>
                                     </div>
                                 </div>
 

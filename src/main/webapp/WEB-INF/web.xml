@@ -11,7 +11,7 @@
   <!-- Khai báo servlet -->
   <servlet>
     <servlet-name>HelloServlet</servlet-name>
-    <servlet-class>com.khanh.HelloServlet</servlet-class>
+    <servlet-class>com.servlet.HelloServlet</servlet-class>
   </servlet>
 
   <!-- Ánh xạ URL đến servlet -->

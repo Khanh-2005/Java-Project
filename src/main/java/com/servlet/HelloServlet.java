@@ -1,4 +1,4 @@
-package com.khanh;
+package com.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;

@@ -1,1 +1,5 @@
-com\khanh\HelloServlet.class
+com\DB\DBConnect.class
+com\servlet\HelloServlet.class
+com\entity\User.class
+com\entity\Jobs.class
+com\servlet\LoginServlet.class
