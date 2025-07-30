@@ -21,12 +21,7 @@
 
             <body>
                 <%@ include file="allcomponent/navbar.jsp" %>
-
-
-
                     <% Connection conn=DBConnect.getConn(); out.println(conn); // nếu thực sự cần in ra %>
-
-
                         <div class="container-fluid back-img">
                             <div class="text-center">
                                 <h1 class="text-white p-4">

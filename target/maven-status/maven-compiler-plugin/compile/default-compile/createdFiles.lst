@@ -1,5 +1,6 @@
+com\servlet\AddPostServlet.class
 com\DB\DBConnect.class
-com\servlet\HelloServlet.class
 com\entity\User.class
+com\dao\JobDAO.class
 com\entity\Jobs.class
 com\servlet\LoginServlet.class

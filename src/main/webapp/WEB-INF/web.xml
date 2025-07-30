@@ -8,19 +8,6 @@
   <!-- Tên ứng dụng -->
   <display-name>job-portal</display-name>
 
-  <!-- Khai báo servlet -->
-  <servlet>
-    <servlet-name>HelloServlet</servlet-name>
-    <servlet-class>com.servlet.HelloServlet</servlet-class>
-  </servlet>
-
-  <!-- Ánh xạ URL đến servlet -->
-  <servlet-mapping>
-    <servlet-name>HelloServlet</servlet-name>
-    <url-pattern>/HelloServlet</url-pattern>
-  </servlet-mapping>
-
-  
 
   <!-- Trang mặc định khi truy cập root của project -->
   <welcome-file-list>
