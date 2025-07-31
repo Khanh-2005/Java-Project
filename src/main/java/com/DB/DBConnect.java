@@ -30,9 +30,9 @@ import java.sql.DriverManager;
 
 public class DBConnect {
 
-    private static final String URL = "jdbc:mysql://localhost:3307/job_portal?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
-    private static final String USER = "root";
-    private static final String PASS = "root";
+    private static String URL = "jdbc:mysql://localhost:3307/job_portal?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
+    private static String USER = "root";
+    private static String PASS = "root";
 
     public static Connection getConn() {
         Connection conn = null;

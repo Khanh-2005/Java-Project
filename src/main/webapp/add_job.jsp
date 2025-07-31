@@ -82,7 +82,7 @@
                                         <div class="form-group">
                                             <label>Job Description</label>
                                             <textarea class="form-control" required rows="6" cols=""
-                                                name="desc"></textarea>
+                                                name="description"></textarea>
                                         </div>
                                         <button class="btn btn-success">Publish Job</button>
                                     </form>

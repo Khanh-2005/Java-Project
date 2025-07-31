@@ -13,17 +13,19 @@ public class JobDAO {
         this.conn = conn;
     }
 
+    // Thêm công việc mới
     public boolean addJobs(Jobs job) {
         boolean f = false;
         try {
-            String sql = "insert into jobs(title, description, category, `status`, location, pdate) values(?,?,?,?,?,now())";
+            // Không thêm cột Id vì MySQL tự AUTO_INCREMENT
+            String sql = "INSERT INTO jobs(title, description, category, `status`, location, pdate) "
+                    + "VALUES (?, ?, ?, ?, ?, NOW())";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, job.getTitle());
             ps.setString(2, job.getDescription());
             ps.setString(3, job.getCategory());
             ps.setString(4, job.getStatus());
             ps.setString(5, job.getLocation());
-            ps.setString(6, job.getPdate());
 
             int i = ps.executeUpdate();
             if (i == 1) {
