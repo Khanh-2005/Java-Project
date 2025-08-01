@@ -12,6 +12,10 @@
             </head>
 
             <body style="background-color: #f0f1f2;">
+                <c:if test="${userobj.role ne 'admin' }">
+                    <redirect url="login.jsp"></redirect>
+                </c:if>
+
                 <%@ include file="allcomponent/navbar.jsp" %>
 
                     <div class="container p-2">
@@ -19,13 +23,13 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="text-center text-success">
-                                        <i class="fas fa-users-friends fa-3x"></i>
+                                        <i class="fas fa-users-friends fa-3x" aria-hidden="true"
+                                            style="color: green"></i>
 
                                         <c:if test="${not empty succMsg}">
                                             <div class="alert alert-success" role="alert">${succMsg}</div>
                                             <c:remove var="succMsg" />
                                         </c:if>
-
 
                                         <h5>Add Job</h5>
                                     </div>

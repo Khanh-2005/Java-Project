@@ -25,8 +25,16 @@
 
                 </ul>
                 <form class="form-inline my-2 my-lg-0">
-                    <a href="login.jsp" class="btn btn-light mr-1"><i class="fas fa-sign-in-alt"></i> Sign In</a>
-                    <a href="signup.jsp" class="btn btn-light"><i class="fas fa-user"></i> Sign Up</a>
+                    <c:if test="${not empty userobj }">
+                        <a href="#" class="btn btn-light mr-1"><i class="fas fa-user"></i>Admin</a>
+                        <a href="#" class="btn btn-light"><i class="fas fa-sign-in-alt"></i>Logout</a>
+                    </c:if>
+
+                    <c:if test="${empty userobj }">
+                        <a href="login.jsp" class="btn btn-light mr-1"><i class="fas fa-sign-in-alt"></i>Login</a>
+                        <a href="signup.jsp" class="btn btn-light"><i class="fas fa-user"></i>Signup</a>
+                    </c:if>
+
                 </form>
             </div>
         </nav>
