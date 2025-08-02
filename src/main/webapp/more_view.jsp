@@ -12,7 +12,7 @@
 
                                 <head>
                                     <meta charset="UTF-8">
-                                    <title>User: View Jobs</title>
+                                    <title>User: View Jobs by fill location and category</title>
                                     <%@ include file="allcomponent/allcss.jsp" %>
                                 </head>
 

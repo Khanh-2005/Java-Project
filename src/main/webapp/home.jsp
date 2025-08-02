@@ -11,7 +11,7 @@
 
                             <head>
                                 <meta charset="UTF-8">
-                                <title>User: View Jobs</title>
+                                <title>User: All Jobs</title>
                                 <%@ include file="allcomponent/allcss.jsp" %>
                             </head>
 
