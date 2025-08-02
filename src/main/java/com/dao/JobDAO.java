@@ -42,7 +42,7 @@ public class JobDAO {
         return f;
     }
 
-    // Read jobs by DESC
+    // Read jobs by id DESC for admin
     public List<Jobs> getAllJobs() {
         List<Jobs> list = new ArrayList<Jobs>();
         Jobs job = null;
@@ -63,6 +63,35 @@ public class JobDAO {
                 list.add(job);
 
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    // Read jobs by id DESC for user
+    public List<Jobs> getAllJobsForUser() {
+        List<Jobs> list = new ArrayList<Jobs>();
+        Jobs job = null;
+
+        try {
+            String sql = "SELECT * FROM jobs ORDER BY id DESC";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, "Active");
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                job = new Jobs();
+                job.setId(rs.getInt(1));
+                job.setTitle(rs.getString(2));
+                job.setDescription(rs.getString(3));
+                job.setCategory(rs.getString(4));
+                job.setStatus(rs.getString(5));
+                job.setLocation(rs.getString(6));
+                job.setPdate(rs.getDate(7) + "");
+                list.add(job);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

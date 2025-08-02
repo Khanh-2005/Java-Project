@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSession;
 import com.entity.User;
+import com.dao.UserDAO;
+import com.DB.DBConnect;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
@@ -26,6 +28,16 @@ public class LoginServlet extends HttpServlet {
                 user.setRole("admin");
                 response.sendRedirect("admin.jsp");
             } else {
+                UserDAO dao = new UserDAO(DBConnect.getConn());
+                User users = dao.login(em, ps);
+
+                if (users != null) {
+                    session.setAttribute("userobj", user);
+                    response.sendRedirect("home.jsp");
+                } else {
+                    session.setAttribute("succMsg", "Invalid Email or Password!");
+                    response.sendRedirect("login.jsp");
+                }
 
             }
 

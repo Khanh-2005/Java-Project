@@ -1,6 +1,8 @@
 com\servlet\AddPostServlet.class
+com\dao\UserDAO.class
 com\servlet\LoginServlet.class
 com\DB\DBConnect.class
+com\servlet\RegisterServlet.class
 com\entity\User.class
 com\servlet\DeleteJobServlet.class
 com\servlet\UpdateJobServlet.class
