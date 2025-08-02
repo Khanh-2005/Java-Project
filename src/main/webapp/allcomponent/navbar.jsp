@@ -25,9 +25,19 @@
 
                 </ul>
                 <form class="form-inline my-2 my-lg-0">
-                    <c:if test="${not empty userobj }">
-                        <a href="#" class="btn btn-light mr-1"><i class="fas fa-user"></i>Admin</a>
-                        <a href="#" class="btn btn-light"><i class="fas fa-sign-in-alt"></i>Logout</a>
+                    <c:if test="${userobj.role eq 'admin' }">
+                        <a href="#" class="btn btn-light mr-1">
+                            <i class="fas fa-user"></i>
+                            Admin
+                        </a>
+                        <a href="logout" class="btn btn-light"><i class="fas fa-sign-in-alt"></i>Logout</a>
+                    </c:if>
+                    <c:if test="${userobj.role eq 'user' }">
+                        <a href="#" class="btn btn-light mr-1">
+                            <i class="fas fa-user"></i>
+                            ${userobj.name}
+                        </a>
+                        <a href="logout" class="btn btn-light"><i class="fas fa-sign-in-alt"></i>Logout</a>
                     </c:if>
 
                     <c:if test="${empty userobj }">

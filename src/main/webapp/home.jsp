@@ -16,9 +16,9 @@
                             </head>
 
                             <body style="background-color: #f0f1f2;">
-                                <!-- <c:if test="${empty userobj }">
+                                <c:if test="${empty userobj }">
                                     <c:redirect url="login.jsp" />
-                                </c:if> -->
+                                </c:if>
 
                                 <%@ include file="allcomponent/navbar.jsp" %>
 

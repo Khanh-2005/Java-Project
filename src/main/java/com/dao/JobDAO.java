@@ -75,7 +75,7 @@ public class JobDAO {
         Jobs job = null;
 
         try {
-            String sql = "SELECT * FROM jobs ORDER BY id DESC";
+            String sql = "SELECT * FROM jobs WHERE `status`=? ORDER BY id DESC";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, "Active");
 
@@ -167,4 +167,65 @@ public class JobDAO {
         }
         return f;
     }
+
+    // Fill job by category or location
+    public List<Jobs> getJobsORLocationAndCate(String category, String location) {
+        List<Jobs> list = new ArrayList<Jobs>();
+        Jobs job = null;
+
+        try {
+            String sql = "SELECT * FROM jobs WHERE category=? OR location=? ORDER BY id DESC";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, category);
+            ps.setString(2, location);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                job = new Jobs();
+                job.setId(rs.getInt(1));
+                job.setTitle(rs.getString(2));
+                job.setDescription(rs.getString(3));
+                job.setCategory(rs.getString(4));
+                job.setLocation(rs.getString(5));
+                job.setStatus(rs.getString(6));
+                job.setPdate(rs.getDate(7) + "");
+                list.add(job);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    // Fill job by category and location
+    public List<Jobs> getJobsANDLocationAndCate(String category, String location) {
+        List<Jobs> list = new ArrayList<Jobs>();
+        Jobs job = null;
+
+        try {
+            String sql = "SELECT * FROM jobs WHERE category=? AND location=? ORDER BY id DESC";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, category);
+            ps.setString(2, location);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                job = new Jobs();
+                job.setId(rs.getInt(1));
+                job.setTitle(rs.getString(2));
+                job.setDescription(rs.getString(3));
+                job.setCategory(rs.getString(4));
+                job.setLocation(rs.getString(5));
+                job.setStatus(rs.getString(6));
+                job.setPdate(rs.getDate(7) + "");
+                list.add(job);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
 }

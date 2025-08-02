@@ -32,7 +32,7 @@ public class LoginServlet extends HttpServlet {
                 User users = dao.login(em, ps);
 
                 if (users != null) {
-                    session.setAttribute("userobj", user);
+                    session.setAttribute("userobj", users);
                     response.sendRedirect("home.jsp");
                 } else {
                     session.setAttribute("succMsg", "Invalid Email or Password!");
