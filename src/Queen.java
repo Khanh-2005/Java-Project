@@ -22,6 +22,10 @@ public class Queen extends Piece{
 
     public Queen(Queen original) {
         super(original);
+        if (getColour() == COLOUR.B)
+            icon = new ImageIcon("images/BQueen.png");
+        else if (getColour() == COLOUR.W)
+            icon = new ImageIcon("images/WQueen.png");
     }
 
     //________________________________________________Overridden Methods________________________________________________

@@ -22,6 +22,10 @@ public class Knight extends Piece{
 
     public Knight(Knight original) {
         super(original);
+        if (getColour() == COLOUR.B)
+            icon = new ImageIcon("images/BKnight.png");
+        else if (getColour() == COLOUR.W)
+            icon = new ImageIcon("images/WKnight.png");
     }
 
     //________________________________________________Overridden Methods________________________________________________

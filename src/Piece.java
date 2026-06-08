@@ -151,6 +151,10 @@ public abstract class Piece{
         while (it.hasNext()) {
             Coordinate nextMove = it.next();
             Pieces p = new Pieces(pieces);
+            if (getName() == ID.PAWN && nextMove.getFile() != getFile() && !Move.tileFull(pieces, nextMove)) {
+                Coordinate capturedPawn = new Coordinate(nextMove.getFile(), getRank());
+                p.getPieces().remove(capturedPawn);
+            }
             p.pieceMove(nextMove, this.makeCopy());
             Coordinate kingPosition = p.findKing(getColour());
             HashSet<Coordinate> dangerMoves = p.allColouredRaws(COLOUR.not(getColour()));

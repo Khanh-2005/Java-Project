@@ -36,6 +36,18 @@ public class King extends Piece{
 
     public King(King original) {
         super(original);
+        if (original.castleCoordKingK != null)
+            castleCoordKingK = new Coordinate(original.castleCoordKingK);
+        if (original.castleCoordKingQ != null)
+            castleCoordKingQ = new Coordinate(original.castleCoordKingQ);
+        if (original.transitionCoordKingK != null)
+            transitionCoordKingK = new Coordinate(original.transitionCoordKingK);
+        if (original.transitionCoordKingQ != null)
+            transitionCoordKingQ = new Coordinate(original.transitionCoordKingQ);
+        if (getColour() == COLOUR.B)
+            icon = new ImageIcon("images/BKing.png");
+        else if (getColour() == COLOUR.W)
+            icon = new ImageIcon("images/WKing.png");
     }
 
     //________________________________________________Getters & Setters________________________________________________

@@ -25,6 +25,12 @@ public class Rook extends Piece{
 
     public Rook (Rook original) {
         super(original);
+        if (original.castleCoordRook != null)
+            castleCoordRook = new Coordinate(original.castleCoordRook);
+        if (getColour() == COLOUR.B)
+            icon = new ImageIcon("images/BRook.png");
+        else if (getColour() == COLOUR.W)
+            icon = new ImageIcon("images/WRook.png");
     }
 
     //________________________________________________Getters & Setters________________________________________________

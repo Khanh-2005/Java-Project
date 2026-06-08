@@ -7,7 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.nio.file.Paths;
-import java.util.HashSet;
+import java.util.Set;
 
 
 // https://www.youtube.com/watch?v=SNYFjgz4bU4
@@ -32,29 +32,33 @@ public class GUIBoard extends JFrame {
 
     // the pieces used for the game
     private final Pieces pieces;
+    private final ChessGameController controller;
+    private final GameMode gameMode;
     private final int dimension = BOARD.LAST_RANK.getRankVal();
     private final int firstRank = BOARD.FIRST_RANK.getRankVal();
     private final char firstFile = BOARD.FIRST_FILE.getFileVal();
     private final char lastFile = BOARD.LAST_FILE.getFileVal();
     private final char charFile = (char) (firstFile - 1);
-    // the turn of the game being played
-    private static COLOUR turn = COLOUR.W;
-
     // text pane containing the moves of a game
     private final JTextPane movePane = new JTextPane();
     // text pane containing the message at the end of the game (mate or draw)
     private final JTextPane matePane = new JTextPane();
+    private final JLabel statusLabel = new JLabel("White to move.");
+    private final JLabel modeLabel = new JLabel();
 
     // the board on which the game is played
     private final JButton[][] board = new JButton[dimension][dimension];
     // the button used to save a game
     private final JButton saveButton = new JButton("Save Game");
+    private final JButton newGameButton = new JButton("New Game");
+    private final JComboBox<GameMode> modeSelector = new JComboBox<>(GameMode.values());
 
     // colours for the board
-    private final Color brown = new Color(150, 75, 0); //brown #964B00
-    private final Color pastel = new Color(255, 222, 173); //navajorwhite #FFDEAD
-    private final Color intermediate = new Color(255, 255, 153);
-    public static final Color infoColour = new Color(51,51,51);
+    private final Color brown = new Color(118, 78, 52);
+    private final Color pastel = new Color(238, 217, 181);
+    private final Color intermediate = new Color(246, 205, 91);
+    private final Color panelAccent = new Color(222, 156, 64);
+    public static final Color infoColour = new Color(35, 39, 44);
 
     // size of a square in board
     private static final int tileSize = 88;
@@ -63,17 +67,8 @@ public class GUIBoard extends JFrame {
     private final BufferedImage invisible = new BufferedImage(80, 80, BufferedImage.TYPE_INT_ARGB);
     private final ImageIcon invisibleIcon = new ImageIcon(invisible);
 
-    // used to determine number of clicks
-    private int counter = 0;
-
-    // number of turns used for game saving
-    private int numberOfTurns = 0;
-
     // build up the game save file
     private static final StringBuilder str = new StringBuilder();
-
-    // piece selected to move
-    private Piece movingPiece;
 
     // ActionHandler used in GUIBoard construcotr
     ButtonHandle gameClick = new ButtonHandle();
@@ -89,12 +84,19 @@ public class GUIBoard extends JFrame {
      */
 
     public GUIBoard(Pieces p) {
+        this(p, GameMode.HUMAN_VS_HUMAN);
+    }
+
+    public GUIBoard(Pieces p, GameMode mode) {
         setTitle("CHESS23");
         setBackground(Color.black);
         Container contents = getContentPane();
         contents.setLayout(new BorderLayout());
 
         pieces = p;
+        gameMode = mode;
+        controller = new ChessGameController(pieces, gameMode);
+        str.setLength(0);
 
         JPanel boardPanel = new JPanel(new GridLayout(dimension, dimension));
         for (int rank = dimension; rank >= firstRank; rank--) {
@@ -307,6 +309,7 @@ public class GUIBoard extends JFrame {
         b.setOpaque(true);
         b.setContentAreaFilled(true);
         b.setBorderPainted(false);
+        b.setFocusPainted(false);
         b.setVisible(true);
     }
 
@@ -348,53 +351,107 @@ public class GUIBoard extends JFrame {
     private JPanel createInfoPanel() {
 
         JPanel movePanel = new JPanel(new GridBagLayout());
-
         GridBagConstraints gbc = new GridBagConstraints();
 
         movePanel.setBackground(infoColour);
         movePanel.setVisible(true);
-
         movePanel.setPreferredSize(new Dimension(300,800));
+        movePanel.setBorder(new EmptyBorder(24, 20, 24, 20));
+
+        JLabel titleLabel = new JLabel("CHESS23");
+        titleLabel.setForeground(Color.white);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 28));
+
+        statusLabel.setForeground(panelAccent);
+        statusLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        statusLabel.setBorder(new EmptyBorder(8, 0, 4, 0));
+
+        modeLabel.setText(gameMode.toString());
+        modeLabel.setForeground(new Color(198, 205, 213));
+        modeLabel.setFont(new Font("Arial", Font.PLAIN, 13));
+        modeLabel.setBorder(new EmptyBorder(0, 0, 14, 0));
+
+        modeSelector.setSelectedItem(gameMode);
+        modeSelector.setBackground(new Color(52, 58, 64));
+        modeSelector.setForeground(Color.white);
+        modeSelector.setFocusable(false);
+        modeSelector.addActionListener(actionEvent -> {
+            GameMode selectedMode = (GameMode) modeSelector.getSelectedItem();
+            if (selectedMode != null && selectedMode != gameMode)
+                startNewGame(selectedMode);
+        });
 
         movePane.setEditable(false);
         movePane.setForeground(Color.white);
         movePane.setBackground(infoColour);
         movePane.setFont(new Font("Arial", Font.BOLD, 14));
-        movePane.setBorder(new EmptyBorder(40,20,40,20));
+        movePane.setBorder(new EmptyBorder(14,14,14,14));
         JScrollPane scrollMoves = new JScrollPane(movePane);
+        scrollMoves.setBorder(BorderFactory.createLineBorder(new Color(70, 76, 84)));
 
         gbc.gridx = 0;
         gbc.weightx = 1;
-        gbc.weighty = 0.4;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        movePanel.add(titleLabel, gbc);
+
         gbc.gridy = 1;
+        movePanel.add(statusLabel, gbc);
+
+        gbc.gridy = 2;
+        movePanel.add(modeLabel, gbc);
+
+        gbc.gridy = 3;
+        gbc.weighty = 1;
         gbc.fill = GridBagConstraints.BOTH;
+        movePanel.add(scrollMoves,gbc);
 
-        movePanel.add(scrollMoves,gbc); // show the moves being played
+        gbc.gridy = 4;
+        gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(14, 0, 0, 0);
+        movePanel.add(modeSelector, gbc);
 
-        saveButton.setBackground(Color.orange);
-        saveButton.setForeground(Color.white);
-        saveButton.setOpaque(true);
-        saveButton.setContentAreaFilled(true);
-        saveButton.setBorderPainted(false);
-        SaveHandle saver = new SaveHandle();
-        saveButton.addActionListener(saver);
+        JPanel actionPanel = new JPanel(new GridLayout(1, 2, 10, 0));
+        actionPanel.setBackground(infoColour);
+        styleActionButton(newGameButton, new Color(80, 91, 102));
+        styleActionButton(saveButton, panelAccent);
+        newGameButton.addActionListener(new NewGameHandle());
+        saveButton.addActionListener(new SaveHandle());
 
-        gbc.gridy = GridBagConstraints.RELATIVE;
-        gbc.fill = GridBagConstraints.NONE;
-        
-        movePanel.add(saveButton,gbc); // add saving button
+        actionPanel.add(newGameButton);
+        actionPanel.add(saveButton);
+
+        gbc.gridy = 5;
+        gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(12, 0, 16, 0);
+        movePanel.add(actionPanel,gbc);
 
         matePane.setEditable(false);
         matePane.setForeground(Color.white);
         matePane.setBackground(infoColour);
-        matePane.setFont(new Font("Arial", Font.BOLD, 20));
-        matePane.setBorder(new EmptyBorder(0,80,40,80));
+        matePane.setFont(new Font("Arial", Font.BOLD, 16));
+        matePane.setBorder(new EmptyBorder(0,0,0,0));
 
+        gbc.gridy = 6;
+        gbc.insets = new Insets(0, 0, 0, 0);
         gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        movePanel.add(matePane,gbc); // add information on check mate / draw
+        movePanel.add(matePane,gbc);
 
         return movePanel;
+    }
+
+    private void styleActionButton(JButton button, Color background) {
+        button.setBackground(background);
+        button.setForeground(Color.white);
+        button.setFont(new Font("Arial", Font.BOLD, 13));
+        button.setOpaque(true);
+        button.setContentAreaFilled(true);
+        button.setBorderPainted(false);
+        button.setFocusPainted(false);
+        button.setPreferredSize(new Dimension(120, 42));
     }
 
     //________________________________________________Piece Movement Methods________________________________________________
@@ -403,25 +460,11 @@ public class GUIBoard extends JFrame {
      * Changes the turn of the game
      */
 
-    private void setTurn() {
-        turn = COLOUR.not(turn);
-    }
-
-    /**
-     * Clears the counter. Used after a second click.
-     * This is used for the logic of the game, as we can know when destination coordinate has been set,
-     * or whether we have yet to choose and origin coordinate.
-     */
-
-    private void clearCounter() {
-        counter = 0;
-    }
-
     /**
      * This is used to illuminate the potential moves of the piece that is being clicked on
      * @param potentials the potential moves of the piece being clicked on
      */
-    private void processClick(HashSet<Coordinate> potentials) {
+    private void processClick(Set<Coordinate> potentials) {
 
         for (int rank = 1; rank <= dimension; rank++) {
             for (char file = firstFile; file <= lastFile; file++) {
@@ -436,21 +479,27 @@ public class GUIBoard extends JFrame {
         }
     }
 
+    private void refreshBoard() {
+        for (int rank = 1; rank <= dimension; rank++) {
+            for (char file = firstFile; file <= lastFile; file++) {
+                int processedRank = rank - firstRank;
+                int processedFile = file - firstFile;
+                Coordinate potentialCoord = new Coordinate(file, rank);
+                backgroundSetter(potentialCoord, board[processedRank][processedFile]);
+                board[processedRank][processedFile].setIcon(invisibleIcon);
+                if (pieces.getPieces().get(potentialCoord) != null) {
+                    Piece updatePiece = pieces.getPiece(potentialCoord);
+                    board[processedRank][processedFile].setIcon(updatePiece.getImageIcon());
+                }
+            }
+        }
+    }
+
     /**
      * This class is used to handle the game logic for the GUI.
      */
 
     private class ButtonHandle implements ActionListener {
-
-        /**
-         * Displays the potential moves, increases counter and sets the movingPiece to the piece selected
-         * @param piece the piece selected
-         */
-        private void selectPiece(Piece piece) {
-            processClick(piece.getPotentialMoves());
-            counter++;
-            movingPiece = piece;
-        }
 
         /**
          * Used to turn 2D array "coordinates" into chess board coordinates
@@ -491,58 +540,54 @@ public class GUIBoard extends JFrame {
                 }
             }
 
-            Piece originPiece = pieces.getPieces().get(coordinate);
-
             if (coordinate != null && Coordinate.inBoard(coordinate)) {
-                if (counter == 0) {
-                    if (originPiece != null && originPiece.getColour() == turn) {
-                        selectPiece(originPiece);
-                    }
+                MoveOutcome outcome = controller.click(coordinate);
+
+                if (outcome.getType() == MoveOutcome.Type.SELECTED) {
+                    processClick(outcome.getHighlightedMoves());
                 } else {
-                    Piece piece = movingPiece;
-
-                    if (piece.isValidMove(coordinate, turn)) {
-                        pieces.makeMove(coordinate, piece);
-                        if (turn == COLOUR.W) {
-                            numberOfTurns++;
-                            str.append(numberOfTurns).append(". ").append(ChessIO.moveString(pieces, coordinate, piece)).append(" ");
-                        } else
-                            str.append(ChessIO.moveString(pieces, coordinate, piece)).append(" ");
-                        movePane.setText(str.toString());
-                        for (int rank = 1; rank <= dimension; rank++) {
-                            for (char file = firstFile; file <= lastFile; file++) {
-                                int processedRank = rank - firstRank;
-                                int processedFile = file - firstFile;
-                                Coordinate potentialCoord = new Coordinate(file, rank);
-                                backgroundSetter(potentialCoord, board[processedRank][processedFile]);
-                                board[processedRank][processedFile].setIcon(invisibleIcon);
-                                if (pieces.getPieces().get(potentialCoord) != null) {
-                                    Piece updatePiece = pieces.getPiece(potentialCoord);
-                                    board[processedRank][processedFile].setIcon(updatePiece.getImageIcon());
-                                }
-                            }
-                        }
-
-                        clearCounter();
-                        setTurn();
-
-                        if (pieces.isMate(turn)) {
-                            matePane.setText(COLOUR.not(turn).toString() + " won by checkmate.");
-                            disableBoardButtons();
-                        } else if (pieces.isStalemate(COLOUR.not(turn))) {
-                            matePane.setText("Draw by stalemate.");
-                            disableBoardButtons();
-                        } else if (pieces.isDraw()) {
-                            matePane.setText("It's a draw.");
-                            disableBoardButtons();
-                        }
-                    } else {
-                        if (originPiece != null && originPiece.getColour() == turn) {
-                            selectPiece(originPiece);
-                        }
-                    }
+                    refreshBoard();
                 }
+
+                str.setLength(0);
+                str.append(outcome.getMoveHistory());
+                movePane.setText(outcome.getMoveHistory());
+                updateStatus(outcome.getGameMessage());
+
+                if (outcome.isGameOver())
+                    disableBoardButtons();
+                else if (outcome.getType() == MoveOutcome.Type.MOVED)
+                    playBotTurn();
             }
+        }
+    }
+
+    private void playBotTurn() {
+        Timer botTimer = new Timer(350, actionEvent -> {
+            MoveOutcome botOutcome = controller.playBotTurnIfNeeded();
+            refreshBoard();
+            str.setLength(0);
+            str.append(botOutcome.getMoveHistory());
+            movePane.setText(botOutcome.getMoveHistory());
+            updateStatus(botOutcome.getGameMessage());
+            if (botOutcome.isGameOver())
+                disableBoardButtons();
+        });
+        botTimer.setRepeats(false);
+        botTimer.start();
+    }
+
+    private void updateStatus(String message) {
+        String displayMessage = message;
+        if (displayMessage == null || displayMessage.length() == 0)
+            displayMessage = controller.getTurn().toString() + " to move.";
+
+        if (displayMessage.endsWith("to move.")) {
+            statusLabel.setText(displayMessage);
+            matePane.setText("");
+        } else {
+            statusLabel.setText(controller.getTurn().toString() + " to move.");
+            matePane.setText(displayMessage);
         }
     }
 
@@ -551,6 +596,21 @@ public class GUIBoard extends JFrame {
     /**
      * Handles the logic to save the game
      */
+
+    private class NewGameHandle implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+            startNewGame((GameMode) modeSelector.getSelectedItem());
+        }
+    }
+
+    private void startNewGame(GameMode selectedMode) {
+        dispose();
+        Pieces newPieces = new Pieces();
+        newPieces.setGUIGame(true);
+        new GUIBoard(newPieces, selectedMode);
+    }
 
     public static class SaveHandle implements ActionListener {
 
@@ -564,7 +624,7 @@ public class GUIBoard extends JFrame {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
 
-            ImageIcon icon = new ImageIcon("WKing.png");
+            ImageIcon icon = new ImageIcon("images/WKing.png");
 
             UIManager.put("OptionPane.background", infoColour);
             UIManager.put("Panel.background", infoColour);
@@ -587,10 +647,11 @@ public class GUIBoard extends JFrame {
                             JOptionPane.ERROR_MESSAGE,
                             icon);
                 } else {
-                    if (ChessIO.saveGame(str.toString(), Paths.get(filePath)))
+                    String savedGame = str.length() == 0 ? "No moves have been played yet." : str.toString();
+                    if (ChessIO.saveGame(savedGame, Paths.get(filePath)))
                         JOptionPane.showMessageDialog(null,
-                                "Game saved succesfuly on path " + filePath,
-                                "Save Succesful",
+                                "Game saved successfully on path " + filePath,
+                                "Save Successful",
                                  JOptionPane.INFORMATION_MESSAGE,
                                  icon);
                     else

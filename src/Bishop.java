@@ -22,6 +22,10 @@ public class Bishop extends Piece{
 
     public Bishop(Bishop original) {
         super(original);
+        if (getColour() == COLOUR.B)
+            icon = new ImageIcon("images/BBishop.png");
+        else if (getColour() == COLOUR.W)
+            icon = new ImageIcon("images/WBishop.png");
     }
 
     //________________________________________________Overridden Methods________________________________________________

@@ -36,6 +36,7 @@ public class Pieces {
     private HashMap<Coordinate, Piece> previousPieces;
     private boolean isCapture;
     private boolean isGUIGame;
+    private int halfMoveClock;
     private ArrayList<HashMap<Coordinate,Piece>> gameProgress = new ArrayList<>();
 
     //________________________________________________Class Constructors________________________________________________
@@ -59,6 +60,7 @@ public class Pieces {
         this.previousPieces = original.previousPieces;
         this.isCapture = original.isCapture;
         this.isGUIGame = original.isGUIGame;
+        this.halfMoveClock = original.halfMoveClock;
         this.gameProgress = copyArrayHash(original.getGameProgress());
     }
 
@@ -111,6 +113,10 @@ public class Pieces {
 
     public ArrayList<HashMap<Coordinate, Piece>> getGameProgress() {
         return gameProgress;
+    }
+
+    public int getHalfMoveClock() {
+        return halfMoveClock;
     }
 
     public void setGUIGame (boolean GUIStatus) {
@@ -242,6 +248,7 @@ public class Pieces {
             if (potentialPawn.getName() == ID.PAWN) {
                 Pawn pawn = (Pawn) potentialPawn;
                 pawn.setPreviousCoordinate(pawn.getCoords());
+                pawn.clearHasMovedTwo();
             }
         }
     }
@@ -404,7 +411,7 @@ public class Pieces {
 
         }
 
-        return false;
+        return halfMoveClock >= 100;
 
     }
 
@@ -415,8 +422,12 @@ public class Pieces {
      */
 
     public boolean isStalemate(COLOUR colour) {
-        HashSet<Coordinate> allMoves = allColouredPotentials(COLOUR.not(colour));
-        return allMoves.size() == 0 && !isCheck(COLOUR.not(colour));
+        return isStalemateFor(COLOUR.not(colour));
+    }
+
+    public boolean isStalemateFor(COLOUR colour) {
+        HashSet<Coordinate> allMoves = allColouredPotentials(colour);
+        return allMoves.size() == 0 && !isCheck(colour);
 
     }
 
@@ -454,8 +465,11 @@ public class Pieces {
     public void makeMove (Coordinate coordinate, Piece piece) {
 
         if (piece.isValidMove(coordinate, piece.getColour())) {
+            Coordinate originCoordinate = findPiece(piece);
             setPreviousPieces(this.getPieces());
             isCapture = Move.tileFull(this, coordinate) && Move.isNotTileColour(this,coordinate, piece.getColour());
+            boolean pawnMove = piece.getName() == ID.PAWN;
+            updatePreviousMovePawns();
             if (piece.getName() == ID.KING) {
                 King castleKing = (King) piece;
                 if (castleKing.canCastleQueen(this) && coordinate.equals(castleKing.getCastleCoordKingQ()) && !isCheck(castleKing.getColour())) {
@@ -475,9 +489,11 @@ public class Pieces {
             else if (piece.getName() == ID.PAWN) {
                 Pawn pawn = (Pawn) piece;
 
-                updatePreviousMovePawns();
                 if (Math.abs(coordinate.getRank() - pawn.getRank()) == 2)
                     pawn.setHasMovedTwo();
+
+                boolean enPassantCapture = !Move.tileFull(this, coordinate)
+                        && coordinate.getFile() != pawn.getFile();
 
                 if (pawn.canPromoteBlack(coordinate) || pawn.canPromoteWhite(coordinate)) {
                     Piece toPromote;
@@ -493,16 +509,10 @@ public class Pieces {
                     addPiece(coordinate, toPromote);
                     pieces.remove(pieceCoord);
                 }
-                else if (pawn.getEnPassantLeft()) {
-                    Coordinate left = Move.leftFree(this,pawn,1).get(0);
+                else if (enPassantCapture) {
+                    Coordinate capturedPawn = new Coordinate(coordinate.getFile(), originCoordinate.getRank());
                     setIsCapture(true);
-                    pieces.remove(left);
-                    pieceMove(coordinate,pawn);
-                }
-                else if (pawn.getEnPassantRight()) {
-                    Coordinate right = Move.rightFree(this,pawn,1).get(0);
-                    setIsCapture(true);
-                    pieces.remove(right);
+                    pieces.remove(capturedPawn);
                     pieceMove(coordinate,pawn);
                 }
                 else {
@@ -512,6 +522,7 @@ public class Pieces {
             else {
                 pieceMove(coordinate, piece);
             }
+            halfMoveClock = (pawnMove || isCapture) ? 0 : halfMoveClock + 1;
         }
         else
             System.err.println(piece.getName().toFullString() + " to " + coordinate.toString() + " is an invalid move.");

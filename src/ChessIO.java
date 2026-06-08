@@ -138,7 +138,7 @@ public class ChessIO {
 
         if (periodCheck == -1)
             return filePath + ".txt";
-        else if (filePath.substring(periodCheck).length() == 4)
+        else if (filePath.substring(periodCheck).equalsIgnoreCase(".txt"))
             return filePath;
         else
             return errorSave;

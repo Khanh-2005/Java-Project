@@ -38,6 +38,16 @@ public class Pawn extends Piece {
 
     public Pawn(Pawn original) {
         super(original);
+        hasMovedTwo = original.hasMovedTwo;
+        enPassantLeft = original.enPassantLeft;
+        enPassantRight = original.enPassantRight;
+        previousCoordinate = new Coordinate(original.previousCoordinate);
+        if (original.promotedPiece != null)
+            promotedPiece = original.promotedPiece.makeCopy();
+        if (getColour() == COLOUR.B)
+            icon = new ImageIcon("images/BPawn.png");
+        else if (getColour() == COLOUR.W)
+            icon = new ImageIcon("images/WPawn.png");
     }
 
     //________________________________________________Getters & Setters________________________________________________
@@ -52,6 +62,10 @@ public class Pawn extends Piece {
 
     public void setHasMovedTwo() {
         this.hasMovedTwo = true;
+    }
+
+    public void clearHasMovedTwo() {
+        this.hasMovedTwo = false;
     }
 
     public boolean getHasMovedTwo() {
@@ -173,6 +187,8 @@ public class Pawn extends Piece {
 
     public ArrayList <Coordinate> enPassant (Pieces pieces) {
         ArrayList<Coordinate> enPassantMoves = new ArrayList<>();
+        enPassantLeft = false;
+        enPassantRight = false;
         ArrayList<Coordinate> left = Move.leftFree(pieces,this,1);
         ArrayList<Coordinate> right = Move.rightFree(pieces,this,1);
 
@@ -293,20 +309,20 @@ public class Pawn extends Piece {
         ImageIcon icon;
 
         if (this.getColour() == COLOUR.B) {
-            queenOption = new JButton(new ImageIcon("BQueen.png"));
-            rookOption = new JButton(new ImageIcon("BRook.png"));
-            bishopOption = new JButton(new ImageIcon("BBishop.png"));
-            knightOption = new JButton(new ImageIcon("BKnight.png"));
+            queenOption = new JButton(new ImageIcon("images/BQueen.png"));
+            rookOption = new JButton(new ImageIcon("images/BRook.png"));
+            bishopOption = new JButton(new ImageIcon("images/BBishop.png"));
+            knightOption = new JButton(new ImageIcon("images/BKnight.png"));
             promotedPiece = new Queen(COLOUR.B,promotionSquare);
-            icon = new ImageIcon("BPawn.png");
+            icon = new ImageIcon("images/BPawn.png");
         }
         else {
-            queenOption = new JButton(new ImageIcon("WQueen.png"));
-            rookOption = new JButton(new ImageIcon("WRook.png"));
-            bishopOption = new JButton(new ImageIcon("WBishop.png"));
-            knightOption = new JButton(new ImageIcon("WKnight.png"));
+            queenOption = new JButton(new ImageIcon("images/WQueen.png"));
+            rookOption = new JButton(new ImageIcon("images/WRook.png"));
+            bishopOption = new JButton(new ImageIcon("images/WBishop.png"));
+            knightOption = new JButton(new ImageIcon("images/WKnight.png"));
             promotedPiece = new Queen(COLOUR.W,promotionSquare);
-            icon = new ImageIcon("WPawn.png");
+            icon = new ImageIcon("images/WPawn.png");
         }
 
         GUIBoard.formatInvisibleButton(queenOption);
